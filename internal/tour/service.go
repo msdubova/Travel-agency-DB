@@ -1,5 +1,7 @@
 package tour
 
+import "time"
+
 type storage interface {
 	GetTours() []Tour
 }
@@ -9,11 +11,27 @@ type Service struct {
 }
 
 func NewService(s storage) *Service {
-	return &Service{
+	service := &Service{
 		s: s,
 	}
+
+	return service
 }
 
 func (s *Service) GetTours() []Tour {
-	return s.s.GetTours()
+
+	tours := s.s.GetTours()
+	for i, tour := range tours {
+		tours[i].PrimePrice = tour.Price * 1.1
+	}
+	now := time.Now()
+	isEvening := now.Hour() >= 18 || now.Hour() < 22
+
+	if isEvening {
+		for i, tour := range tours {
+			tours[i].Price = tour.PrimePrice
+		}
+	}
+
+	return tours
 }

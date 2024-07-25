@@ -9,6 +9,7 @@ type Tour struct {
 	EndDate     time.Time `json:"end_date"`
 	Destination string    `json:"destination"`
 	Description string    `json:"description"`
+	PrimePrice  float64
 }
 
 type Tours []Tour

@@ -23,5 +23,8 @@ func (s *InMemStorage) GetTours() []Tour {
 	s.toursM.Lock()
 	defer s.toursM.Unlock()
 
-	return s.tours
+	toursCopy := make([]Tour, len(s.tours))
+	copy(toursCopy, s.tours)
+
+	return toursCopy
 }
