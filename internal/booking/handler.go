@@ -2,9 +2,7 @@ package booking
 
 import (
 	"encoding/json"
-	"math/rand"
 	"net/http"
-	"strconv"
 
 	"github.com/rs/zerolog/log"
 )
@@ -12,7 +10,7 @@ import (
 var s InMemStorage
 
 type service interface {
-	CreateBooking(b Booking)
+	CreateBooking(b Booking) Booking
 	GetBookings() []Booking
 }
 
@@ -36,14 +34,12 @@ func (h Handler) CreateBooking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b.ReservationNumber = strconv.Itoa(rand.Intn(100000))
-	b.Status = "pending"
-
-	h.s.CreateBooking(b)
+	newBooking := h.s.CreateBooking(b)
 
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(b)
+
+	err = json.NewEncoder(w).Encode(newBooking)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Debug().Err(err).Msg("Failed to encode JSON response")
@@ -52,6 +48,8 @@ func (h Handler) CreateBooking(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) GetBookings(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	bookings := h.s.GetBookings()
 
 	err := json.NewEncoder(w).Encode(bookings)
@@ -60,5 +58,5 @@ func (h Handler) GetBookings(w http.ResponseWriter, r *http.Request) {
 		log.Debug().Err(err).Msg("Failed to encode JSON response")
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+
 }

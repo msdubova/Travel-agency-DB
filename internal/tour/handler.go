@@ -24,6 +24,7 @@ func NewHandler(s service) Handler {
 }
 
 func (h Handler) GetTours(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	tours := h.s.GetTours()
 
 	err := json.NewEncoder(w).Encode(tours)
@@ -32,5 +33,5 @@ func (h Handler) GetTours(w http.ResponseWriter, r *http.Request) {
 		log.Debug().Err(err).Msg("Failed to encode JSON response")
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+
 }
