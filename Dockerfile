@@ -1,10 +1,13 @@
 FROM golang
 
-WORKDIR /Travel-agency
+WORKDIR /app
 
 COPY . .
 
-RUN go build -o travelagency .
+WORKDIR /app/cmd
 
-CMD ["/Travel-agency/travelagency"]
+RUN go build -o /app/travelagency .
+
+CMD ["/app/travelagency"]
+
 
